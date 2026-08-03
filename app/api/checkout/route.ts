@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
   // Demo mode: no Stripe keys configured, so we route through a built-in
   // simulated checkout page instead of a real charge.
-  const token = createDemoCheckoutToken(book.slug);
+  const token = await createDemoCheckoutToken(book.slug);
   const demoUrl = `${origin}/checkout/demo?token=${encodeURIComponent(
     token
   )}&success_url=${encodeURIComponent(successUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}`;

@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "fs/promises";
-import path from "path";
 import { getBook } from "@/lib/books";
 import { verifyPaidSession } from "@/lib/payment";
-
-const CONTENT_DIR = path.join(process.cwd(), "content");
+import { getPdfBytes } from "@/lib/pdf-registry";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -21,10 +18,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Payment required" }, { status: 402 });
   }
 
-  const filePath = path.join(CONTENT_DIR, `${slug}.pdf`);
-  const fileBuffer = await readFile(filePath);
+  const bytes = getPdfBytes(slug);
+  if (!bytes) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
 
-  return new NextResponse(new Uint8Array(fileBuffer), {
+  return new NextResponse(new Uint8Array(bytes), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${slug}.pdf"`,

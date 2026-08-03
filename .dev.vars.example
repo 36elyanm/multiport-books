@@ -1,0 +1,6 @@
+# Copy to .dev.vars to supply secrets when running `npm run cf:preview`
+# (Wrangler's local dev / `wrangler dev`). Not used by plain `next dev` —
+# that reads .env.local instead. See .env.example for the same variables.
+
+STRIPE_SECRET_KEY=
+APP_SECRET=

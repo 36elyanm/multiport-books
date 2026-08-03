@@ -12,7 +12,7 @@ export default async function DemoCheckoutPage({
   const successUrl = params.success_url ?? "/";
   const cancelUrl = params.cancel_url ?? "/";
 
-  const decoded = readDemoToken(token);
+  const decoded = await readDemoToken(token);
   const book = decoded ? getBook(decoded.bookId) : undefined;
 
   if (!book || decoded?.paid) {
