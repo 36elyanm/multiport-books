@@ -10,7 +10,10 @@
     "lint": "eslint",
     "cf:build": "npm run generate:assets && opennextjs-cloudflare build",
     "cf:preview": "npm run cf:build && wrangler dev",
-    "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy"
+    "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy",
+    "pages:build": "npm run cf:build && node scripts/pages-worker-layout.mjs",
+    "pages:preview": "npm run pages:build && wrangler pages dev .open-next/assets --compatibility-date=2026-08-03 --compatibility-flags=nodejs_compat",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .open-next/assets --compatibility-date=2026-08-03 --compatibility-flags=nodejs_compat"
   },
   "dependencies": {
     "next": "16.2.12",

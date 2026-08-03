@@ -66,12 +66,35 @@ locally; leave it unset to use the demo paywall.
 
 ## Deploying to Cloudflare
 
-This app deploys to **Cloudflare Workers** (what the dashboard calls
-"Workers & Pages") via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare),
-which is what makes full Next.js App Router + Route Handlers work there —
+This app can deploy to Cloudflare either as a **Workers** project or as a
+classic **Pages** (Git-connected) project. Both run the exact same code via
+the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare) —
 Cloudflare's older `next-on-pages` adapter is deprecated and doesn't
 support enough of Next.js for this app (it needs the Node.js runtime, not
 just Edge).
+
+### Option A: Cloudflare Pages (Git-connected, dashboard build)
+
+This is the simpler path if you already created a **Pages** project
+connected to this GitHub repo (dashboard shows `*.pages.dev` deployment
+URLs). In your Pages project's **Settings → Build**, set:
+
+- **Build command:** `npm run pages:build`
+- **Build output directory:** `.open-next/assets`
+
+Save, then trigger a new deployment (push a commit, or use "Retry
+deployment"). Pages will run our build, which produces a `_worker.js`
+directory inside `.open-next/assets` — Cloudflare Pages automatically
+detects that and runs the whole app dynamically ("Advanced Mode") instead
+of only serving static files.
+
+To test the exact same thing locally first:
+
+```bash
+npm run pages:preview
+```
+
+### Option B: Cloudflare Workers (via Wrangler CLI)
 
 ```bash
 # one-time: authenticate wrangler with your Cloudflare account
@@ -86,21 +109,25 @@ npm run cf:deploy
 
 `wrangler.jsonc` names the Worker `multiport-books` — change `name` there
 if you want a different one, and update the matching `services` block
-(`WORKER_SELF_REFERENCE`) to the same name.
+(`WORKER_SELF_REFERENCE`) to the same name. Note this creates a separate
+Cloudflare **Workers** project, distinct from any Pages project you may
+already have — they don't share deployments, only the same source code.
 
-**Setting environment variables/secrets on Cloudflare:**
+### Setting environment variables/secrets on Cloudflare
 
-- Dashboard: your Worker → **Settings → Variables and Secrets** → add
+- Dashboard: your project (Pages or Workers) → **Settings → Variables and
+  Secrets** (Pages) or **Settings → Variables and Secrets** (Workers) → add
   `STRIPE_SECRET_KEY`, toggle **Encrypt**.
 - Or via CLI, which never touches a file on disk:
   ```bash
-  npx wrangler secret put STRIPE_SECRET_KEY
+  npx wrangler pages secret put STRIPE_SECRET_KEY   # for a Pages project
+  npx wrangler secret put STRIPE_SECRET_KEY         # for a Workers project
   ```
-- For **local** `npm run cf:preview` runs, copy `.dev.vars.example` to
-  `.dev.vars` and fill in `STRIPE_SECRET_KEY` there instead (Wrangler reads
-  `.dev.vars`, not `.env.local`, for local secrets).
+- For **local** `npm run cf:preview`/`pages:preview` runs, copy
+  `.dev.vars.example` to `.dev.vars` and fill in `STRIPE_SECRET_KEY` there
+  instead (Wrangler reads `.dev.vars`, not `.env.local`, for local secrets).
 
-Without `STRIPE_SECRET_KEY` set, the deployed Worker behaves exactly like
+Without `STRIPE_SECRET_KEY` set, the deployed site behaves exactly like
 local dev without a key: the demo paywall runs instead of real Stripe.
 
 ## Learn More
