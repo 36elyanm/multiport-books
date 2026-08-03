@@ -14,9 +14,9 @@ export const books: Book[] = [
     slug: "the-weird-penguin",
     title: "The Weird Penguin",
     author: "Multiport Books",
-    tagline: "He doesn't waddle. He doesn't fish. He's just... weird.",
+    tagline: "He came for the warmth. He left with a stolen sandwich and an Uber receipt.",
     description:
-      "In a colony where every penguin follows the same icy routine, one small penguin marches to his own beat. A short, warm-hearted illustrated story about standing out, fitting in, and why weird is just another word for wonderful.",
+      "A penguin flies to the USA looking for somewhere warm, wanders into the wrong locker room, and accidentally becomes the subject of a \"peeping tom\" rumor before he ever finds a sauna. Things only get stranger from there. A short, silly, deadpan comedy that ends on a question it never answers.",
     priceCents: 100,
     coverId: "penguin",
     available: true,
